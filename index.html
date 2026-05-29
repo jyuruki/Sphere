@@ -1,20 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hyperreal Sphere Material Lab</title>
+<title>Sphere Material Lab</title>
 <style>
-html,body{margin:0;height:100%;overflow:hidden;background:#050505;font-family:Arial}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Arial}
 canvas{display:block}
-#ui{position:fixed;top:10px;left:10px;width:290px;max-height:calc(100vh - 20px);overflow:auto;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);color:white;padding:14px;border-radius:14px;z-index:10;box-shadow:0 0 30px rgba(0,0,0,.5)}
+#ui{position:fixed;top:10px;left:10px;width:260px;max-height:90vh;overflow:auto;background:rgba(0,0,0,.75);color:white;padding:12px;border-radius:12px;z-index:10}
+label{display:block;margin-top:8px;font-size:12px}
+input,select,button{width:100%;box-sizing:border-box}
 h2{font-size:16px;margin:0 0 8px}
-h3{font-size:13px;margin:14px 0 6px;color:#9fd0ff}
-label{font-size:12px;display:block;margin-top:8px}
-input,select,button{width:100%;box-sizing:border-box;margin-top:3px}
-input[type=color]{height:32px}
-button{padding:7px;border:0;border-radius:8px;background:#2b7cff;color:white}
-.small{font-size:11px;color:#aaa;line-height:1.3}
 </style>
 
 <script type="importmap">
@@ -29,283 +25,198 @@ button{padding:7px;border:0;border-radius:8px;background:#2b7cff;color:white}
 
 <body>
 <div id="ui">
-<h2>Hyperreal Sphere Lab</h2>
-<div class="small">Drag to orbit. Pinch/scroll to zoom. Adjust material, lights, reflections, and camera.</div>
+<h2>Sphere Material Lab</h2>
 
-<h3>Material</h3>
-<label>Preset</label>
+<label>Material</label>
 <select id="preset">
-<option value="chrome">Mirror Chrome</option>
-<option value="gold">Polished Gold</option>
-<option value="blackCeramic">Black Ceramic</option>
-<option value="plastic">Glossy Plastic</option>
-<option value="rubber">Soft Rubber</option>
-<option value="glass">Thick Glass</option>
-<option value="diamond">Diamond-ish</option>
-<option value="carpaint">Clearcoat Car Paint</option>
+<option value="chrome">Chrome</option>
+<option value="gold">Gold</option>
+<option value="plastic">Plastic</option>
+<option value="glass">Glass</option>
+<option value="rubber">Rubber</option>
 </select>
 
 <label>Color</label>
-<input id="color" type="color" value="#ffffff">
+<input id="color" type="color" value="#aaaaaa">
 
 <label>Metalness</label>
-<input id="metalness" type="range" min="0" max="1" step="0.01" value="1">
+<input id="metalness" type="range" min="0" max="1" step="0.01" value="0.6">
 
 <label>Roughness</label>
-<input id="roughness" type="range" min="0" max="1" step="0.01" value="0.03">
+<input id="roughness" type="range" min="0" max="1" step="0.01" value="0.18">
 
 <label>Clearcoat</label>
-<input id="clearcoat" type="range" min="0" max="1" step="0.01" value="0.4">
+<input id="clearcoat" type="range" min="0" max="1" step="0.01" value="0.5">
 
-<label>Clearcoat Roughness</label>
-<input id="clearcoatRoughness" type="range" min="0" max="1" step="0.01" value="0.05">
+<label>Light Intensity</label>
+<input id="intensity" type="range" min="0" max="15" step="0.1" value="6">
 
-<label>Transmission / Glassiness</label>
-<input id="transmission" type="range" min="0" max="1" step="0.01" value="0">
+<label>Light X</label>
+<input id="lx" type="range" min="-10" max="10" step="0.1" value="4">
 
-<label>Index of Refraction</label>
-<input id="ior" type="range" min="1" max="2.5" step="0.01" value="1.5">
+<label>Light Y</label>
+<input id="ly" type="range" min="-10" max="10" step="0.1" value="5">
 
-<label>Normal/Bump Strength</label>
-<input id="bump" type="range" min="0" max="1" step="0.01" value="0.05">
+<label>Light Z</label>
+<input id="lz" type="range" min="-10" max="10" step="0.1" value="4">
 
-<h3>Lighting</h3>
-<label>Key Light Intensity</label>
-<input id="keyI" type="range" min="0" max="20" step="0.1" value="6">
+<label>Environment Brightness</label>
+<input id="env" type="range" min="0" max="3" step="0.05" value="1.2">
 
-<label>Key X</label>
-<input id="keyX" type="range" min="-10" max="10" step="0.1" value="4">
-<label>Key Y</label>
-<input id="keyY" type="range" min="-10" max="10" step="0.1" value="5">
-<label>Key Z</label>
-<input id="keyZ" type="range" min="-10" max="10" step="0.1" value="4">
-
-<label>Fill Light</label>
-<input id="fillI" type="range" min="0" max="10" step="0.1" value="1.2">
-
-<label>Rim Light</label>
-<input id="rimI" type="range" min="0" max="15" step="0.1" value="3">
-
-<label>Light Color</label>
-<input id="lightColor" type="color" value="#ffffff">
-
-<h3>World / Reflections</h3>
-<label>Environment</label>
-<select id="env">
-<option value="studio">Studio HDR</option>
-<option value="city">City HDR</option>
-<option value="sunset">Sunset HDR</option>
-</select>
-
-<label>Environment Intensity</label>
-<input id="envIntensity" type="range" min="0" max="5" step="0.05" value="1.5">
-
-<label>Exposure</label>
-<input id="exposure" type="range" min="0.1" max="3" step="0.05" value="1.15">
-
-<label>Floor Reflectivity</label>
-<input id="floorMetal" type="range" min="0" max="1" step="0.01" value="0.35">
-
-<label>Floor Roughness</label>
-<input id="floorRough" type="range" min="0" max="1" step="0.01" value="0.18">
-
-<h3>Camera</h3>
-<button id="spin">Toggle Auto Spin</button>
-<button id="reset">Reset Camera</button>
+<button id="spin">Toggle Spin</button>
 </div>
 
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x101018);
 
-const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.01, 100);
-camera.position.set(0, 1.15, 4.2);
+const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0, 1.1, 4);
 
-const renderer = new THREE.WebGLRenderer({ antialias:true });
+const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMappingExposure = 1.1;
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.target.set(0, .65, 0);
+controls.target.set(0, .7, 0);
 
-const pmrem = new THREE.PMREMGenerator(renderer);
-pmrem.compileEquirectangularShader();
-
-const hdrs = {
-studio: "https://threejs.org/examples/textures/equirectangular/royal_esplanade_1k.hdr",
-city: "https://threejs.org/examples/textures/equirectangular/pedestrian_overpass_1k.hdr",
-sunset: "https://threejs.org/examples/textures/equirectangular/venice_sunset_1k.hdr"
-};
-
-function makeNoiseTexture(){
+function makeEnvTexture(){
   const c = document.createElement("canvas");
-  c.width = c.height = 512;
+  c.width = 1024;
+  c.height = 512;
   const ctx = c.getContext("2d");
-  const img = ctx.createImageData(512,512);
-  for(let i=0;i<img.data.length;i+=4){
-    const v = 120 + Math.random()*40;
-    img.data[i]=v; img.data[i+1]=v; img.data[i+2]=v; img.data[i+3]=255;
-  }
-  ctx.putImageData(img,0,0);
+
+  const g = ctx.createLinearGradient(0,0,0,512);
+  g.addColorStop(0,"#dff3ff");
+  g.addColorStop(.45,"#3b4968");
+  g.addColorStop(.55,"#111118");
+  g.addColorStop(1,"#050505");
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,1024,512);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(80,80,180,80);
+  ctx.fillRect(720,120,160,120);
+  ctx.fillRect(430,40,80,220);
+
   const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(5,5);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
 
-const noise = makeNoiseTexture();
+const envTexture = makeEnvTexture();
+scene.environment = envTexture;
 
-const mat = new THREE.MeshPhysicalMaterial({
-  color: 0xffffff,
-  metalness: 1,
-  roughness: .03,
-  clearcoat: .4,
+const material = new THREE.MeshPhysicalMaterial({
+  color: 0xaaaaaa,
+  metalness: .6,
+  roughness: .18,
+  clearcoat: .5,
   clearcoatRoughness: .05,
-  envMapIntensity: 1.5,
-  normalMap: noise,
-  normalScale: new THREE.Vector2(.05,.05)
+  envMapIntensity: 1.2
 });
 
 const sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(1,192,192),
-  mat
+  new THREE.SphereGeometry(1,128,128),
+  material
 );
-sphere.position.y = 1.05;
-sphere.castShadow = true;
+sphere.position.y = 1;
 scene.add(sphere);
 
-const floorMat = new THREE.MeshPhysicalMaterial({
-  color: 0x111111,
-  metalness: .35,
-  roughness: .18,
-  envMapIntensity: 1
-});
-
 const floor = new THREE.Mesh(
-  new THREE.CircleGeometry(7,160),
-  floorMat
+  new THREE.CircleGeometry(6,128),
+  new THREE.MeshPhysicalMaterial({
+    color:0x181818,
+    metalness:.25,
+    roughness:.25,
+    envMapIntensity:1
+  })
 );
 floor.rotation.x = -Math.PI/2;
-floor.receiveShadow = true;
 scene.add(floor);
 
 const key = new THREE.PointLight(0xffffff,6,50);
 key.position.set(4,5,4);
-key.castShadow = true;
 scene.add(key);
 
-const fill = new THREE.PointLight(0x88bbff,1.2,50);
-fill.position.set(-5,3,3);
+const fill = new THREE.PointLight(0x88bbff,1.5,50);
+fill.position.set(-4,3,3);
 scene.add(fill);
 
 const rim = new THREE.PointLight(0xffffff,3,50);
 rim.position.set(-3,4,-4);
 scene.add(rim);
 
-const glow = new THREE.Mesh(
-  new THREE.SphereGeometry(.07,32,32),
+const lightBall = new THREE.Mesh(
+  new THREE.SphereGeometry(.08,32,32),
   new THREE.MeshBasicMaterial({color:0xffffff})
 );
-scene.add(glow);
+scene.add(lightBall);
 
-new THREE.RingGeometry();
-
-async function loadHDR(name){
-  new RGBELoader().load(hdrs[name], hdr => {
-    const env = pmrem.fromEquirectangular(hdr).texture;
-    scene.environment = env;
-    scene.background = env;
-    hdr.dispose();
-  });
-}
-loadHDR("studio");
-
-const $ = id => document.getElementById(id);
+function $(id){return document.getElementById(id);}
 
 const presets = {
-chrome:{color:"#ffffff",metalness:1,roughness:.02,clearcoat:.6,clearcoatRoughness:.02,transmission:0,ior:1.5,bump:.015},
-gold:{color:"#ffd36a",metalness:1,roughness:.08,clearcoat:.45,clearcoatRoughness:.04,transmission:0,ior:1.5,bump:.02},
-blackCeramic:{color:"#050505",metalness:0,roughness:.12,clearcoat:1,clearcoatRoughness:.03,transmission:0,ior:1.6,bump:.01},
-plastic:{color:"#1d7cff",metalness:0,roughness:.22,clearcoat:.35,clearcoatRoughness:.08,transmission:0,ior:1.45,bump:.04},
-rubber:{color:"#1b1b1b",metalness:0,roughness:.82,clearcoat:0,clearcoatRoughness:.7,transmission:0,ior:1.4,bump:.12},
-glass:{color:"#e8f6ff",metalness:0,roughness:0,clearcoat:1,clearcoatRoughness:0,transmission:1,ior:1.5,bump:0},
-diamond:{color:"#ffffff",metalness:0,roughness:0,clearcoat:1,clearcoatRoughness:0,transmission:1,ior:2.42,bump:0},
-carpaint:{color:"#c40018",metalness:.15,roughness:.18,clearcoat:1,clearcoatRoughness:.04,transmission:0,ior:1.55,bump:.025}
+  chrome:{color:"#cccccc",metalness:1,roughness:.03,clearcoat:.7},
+  gold:{color:"#ffd36a",metalness:1,roughness:.12,clearcoat:.5},
+  plastic:{color:"#2388ff",metalness:0,roughness:.28,clearcoat:.45},
+  glass:{color:"#dff8ff",metalness:0,roughness:.01,clearcoat:1,transmission:.75},
+  rubber:{color:"#111111",metalness:0,roughness:.85,clearcoat:0}
 };
 
-function applyPreset(){
-  const p = presets[$("preset").value];
-  for(const k in p){
-    if($(k)) $(k).value = p[k];
-  }
-  updateMaterial();
-}
-
 function updateMaterial(){
-  mat.color.set($("color").value);
-  mat.metalness = +$("metalness").value;
-  mat.roughness = +$("roughness").value;
-  mat.clearcoat = +$("clearcoat").value;
-  mat.clearcoatRoughness = +$("clearcoatRoughness").value;
-  mat.transmission = +$("transmission").value;
-  mat.ior = +$("ior").value;
-  mat.thickness = 1.8;
-  mat.envMapIntensity = +$("envIntensity").value;
-  mat.normalScale.set(+$("bump").value, +$("bump").value);
-  mat.transparent = mat.transmission > .01;
-  mat.needsUpdate = true;
-
-  floorMat.metalness = +$("floorMetal").value;
-  floorMat.roughness = +$("floorRough").value;
-  floorMat.envMapIntensity = +$("envIntensity").value * .8;
-  floorMat.needsUpdate = true;
+  material.color.set($("color").value);
+  material.metalness = +$("metalness").value;
+  material.roughness = +$("roughness").value;
+  material.clearcoat = +$("clearcoat").value;
+  material.clearcoatRoughness = .05;
+  material.transmission = material.userData.transmission || 0;
+  material.thickness = 1;
+  material.ior = 1.5;
+  material.envMapIntensity = +$("env").value;
+  material.transparent = material.transmission > 0;
+  material.needsUpdate = true;
 }
 
-$("preset").onchange = applyPreset;
-[
-"color","metalness","roughness","clearcoat","clearcoatRoughness",
-"transmission","ior","bump","envIntensity","floorMetal","floorRough"
-].forEach(id => $(id).oninput = updateMaterial);
+$("preset").onchange = () => {
+  const p = presets[$("preset").value];
+  $("color").value = p.color;
+  $("metalness").value = p.metalness;
+  $("roughness").value = p.roughness;
+  $("clearcoat").value = p.clearcoat;
+  material.userData.transmission = p.transmission || 0;
+  updateMaterial();
+};
 
-$("env").onchange = () => loadHDR($("env").value);
+["color","metalness","roughness","clearcoat","env"].forEach(id=>{
+  $(id).oninput = updateMaterial;
+});
 
-$("spin").onclick = () => controls.autoRotate = !controls.autoRotate;
-$("reset").onclick = () => {
-  camera.position.set(0,1.15,4.2);
-  controls.target.set(0,.65,0);
-  controls.update();
+$("spin").onclick = () => {
+  controls.autoRotate = !controls.autoRotate;
 };
 
 function animate(){
   requestAnimationFrame(animate);
 
-  renderer.toneMappingExposure = +$("exposure").value;
+  key.intensity = +$("intensity").value;
+  key.position.set(+$("lx").value,+$("ly").value,+$("lz").value);
+  lightBall.position.copy(key.position);
 
-  key.intensity = +$("keyI").value;
-  key.position.set(+$("keyX").value,+$("keyY").value,+$("keyZ").value);
-  key.color.set($("lightColor").value);
-
-  fill.intensity = +$("fillI").value;
-  rim.intensity = +$("rimI").value;
-
-  glow.position.copy(key.position);
-  glow.material.color.copy(key.color);
-
-  sphere.rotation.y += .002;
+  sphere.rotation.y += .003;
 
   controls.update();
   renderer.render(scene,camera);
 }
+
 animate();
 
 addEventListener("resize",()=>{
